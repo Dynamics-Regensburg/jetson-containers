@@ -70,23 +70,12 @@ RUN mkdir ros_catkin_ws && \
     rm -rf /var/lib/apt/lists/*
 
 # Dynamics specific dependencies
-
-RUN pip3 install matplotlib>=3.2.2 \
-                Pillow \
-                PyYAML>=5.3.1 \
-                torch>=1.7.0 \
-                torchvision>=0.8.1 \
-                tqdm>=4.41.0 \
-                tensorboard>=2.4.1 \
-                seaborn>=0.11.0 \
-                pandas \
-                scikit-learn==0.19.2 \
-                thop \
-                pycocotools>=2.0
+RUN wget https://raw.githubusercontent.com/Dynamics-Regensburg/jetson-containers/main/requirements.txt
+RUN pip3 install -qr /workspace/requirements.txt
 
 # setup entrypoint
-COPY ./packages/ros_entrypoint.sh /ros_entrypoint.sh
+RUN echo 'ROS Workspace not mounted correctly' >> /root/.bashrc
 RUN echo 'source ${ROS_ROOT}/setup.bash' >> /root/.bashrc
-ENTRYPOINT ["/ros_entrypoint.sh"]
+ENTRYPOINT ["/workspace/entrypoint.sh"]
 CMD ["bash"]
 WORKDIR /
