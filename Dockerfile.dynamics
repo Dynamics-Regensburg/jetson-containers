@@ -74,7 +74,7 @@ RUN wget https://raw.githubusercontent.com/Dynamics-Regensburg/jetson-containers
 RUN pip3 install -qr /workspace/requirements.txt
 
 # setup entrypoint
-RUN echo 'ROS Workspace not mounted correctly' >> /workspace/entrypoint.sh
+RUN echo 'echo "ROS Workspace not mounted correctly"' >> /workspace/entrypoint.sh
 RUN echo 'source ${ROS_ROOT}/setup.bash' >> /root/.bashrc
 ENTRYPOINT ["/workspace/entrypoint.sh"]
 CMD ["bash"]
