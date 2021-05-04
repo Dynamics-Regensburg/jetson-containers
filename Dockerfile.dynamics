@@ -18,14 +18,8 @@
 # FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 # DEALINGS IN THE SOFTWARE.
 
-ARG BASE_IMAGE=nvcr.io/nvidia/l4t-base:r32.4.4
-ARG PYTORCH_IMAGE
-ARG TENSORFLOW_IMAGE
 
-FROM ${PYTORCH_IMAGE} as pytorch
-FROM ${TENSORFLOW_IMAGE} as tensorflow
-FROM ${BASE_IMAGE}
-
+FROM nvcr.io/nvidia/l4t-pytorch:r32.5.0-pth1.7-py3
 
 #
 # setup environment
