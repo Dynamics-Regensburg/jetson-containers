@@ -70,11 +70,14 @@ RUN mkdir ros_catkin_ws && \
     rm -rf /var/lib/apt/lists/*
 
 # Dynamics specific dependencies
-RUN wget https://raw.githubusercontent.com/Dynamics-Regensburg/jetson-containers/main/requirements.txt -O /workspace/requirements.txt
-RUN pip3 install -qr /workspace/requirements.txt
+RUN wget https://raw.githubusercontent.com/Dynamics-Regensburg/jetson-containers/main/requirements.txt \
+    -O /workspace/requirements.txt && \
+    pip3 install -qr /workspace/requirements.txt
 
 # setup entrypoint
-RUN echo 'echo "ROS Workspace not mounted correctly"' >> /workspace/entrypoint.sh
+RUN echo 'echo "ROS Workspace not mounted correctly"' >> /workspace/entrypoint.sh && \
+    chmod +x /workspace/entrypoint.sh
+
 RUN echo 'source ${ROS_ROOT}/setup.bash' >> /root/.bashrc
 ENTRYPOINT ["/workspace/entrypoint.sh"]
 CMD ["bash"]
