@@ -75,12 +75,12 @@ RUN wget https://raw.githubusercontent.com/Dynamics-Regensburg/jetson-containers
     pip3 install -qr /workspace/requirements.txt
 
 # Dynamics LCD specific dependencies
-RUN apt-get install libpcl-dev
+#RUN apt-get install libpcl-dev
 
 # Dynamics GPS specific dependencies
 RUN wget https://github.com/Dynamics-Regensburg/jetson-containers/raw/main/libs/vnproglib.tar.gz && \
     tar -xzvf vnproglib.tar.gz && \
-    cd vnprogib-1.1.5.0/python && \
+    cd vnproglib-1.1.5.0/python && \
     python3 setup.py install
 
 
@@ -89,6 +89,6 @@ RUN echo '#!/bin/bash \n echo "ROS Workspace not mounted correctly"' >> /workspa
     chmod +x /workspace/entrypoint.sh
 
 RUN echo 'source ${ROS_ROOT}/setup.bash' >> /root/.bashrc
-ENTRYPOINT ["/workspace/entrypoint.sh"]
+#ENTRYPOINT ["/workspace/entrypoint.sh"]
 CMD ["bash"]
 WORKDIR /
