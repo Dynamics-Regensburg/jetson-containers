@@ -75,7 +75,7 @@ RUN wget https://raw.githubusercontent.com/Dynamics-Regensburg/jetson-containers
     pip3 install -qr /workspace/requirements.txt
 
 # Dynamics LCD specific dependencies
-RUN apt install libpcl-dev
+RUN apt-get install libpcl-dev
 
 # Dynamics GPS specific dependencies
 RUN wget https://github.com/Dynamics-Regensburg/jetson-containers/raw/main/libs/vnproglib.tar.gz && \
