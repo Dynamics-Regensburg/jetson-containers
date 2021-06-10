@@ -1,12 +1,12 @@
 #
 # this dockerfile roughly follows the 'Install ROS From Source' procedures from:
-#   https://index.ros.org/doc/ros2/Installation/Foxy/Linux-Development-Setup/
+#   https://docs.ros.org/en/galactic/Installation/Ubuntu-Development-Setup.html
 #
 ARG BASE_IMAGE=nvcr.io/nvidia/l4t-base:r32.5.0
 FROM ${BASE_IMAGE}
 
 ARG ROS_PKG=ros_base
-ENV ROS_DISTRO=foxy
+ENV ROS_DISTRO=galactic
 ENV ROS_ROOT=/opt/ros/${ROS_DISTRO}
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -66,29 +66,15 @@ RUN python3 -m pip install -U \
 		pytest-rerunfailures \
 		pytest
 
-# compile yaml-cpp-0.6, which some ROS packages may use (but is not in the 18.04 apt repo)
-RUN git clone --branch yaml-cpp-0.6.0 https://github.com/jbeder/yaml-cpp yaml-cpp-0.6 && \
-    cd yaml-cpp-0.6 && \
-    mkdir build && \
-    cd build && \
-    cmake -DBUILD_SHARED_LIBS=ON .. && \
-    make -j$(nproc) && \
-    cp libyaml-cpp.so.0.6.0 /usr/lib/aarch64-linux-gnu/ && \
-    ln -s /usr/lib/aarch64-linux-gnu/libyaml-cpp.so.0.6.0 /usr/lib/aarch64-linux-gnu/libyaml-cpp.so.0.6
-
 # https://answers.ros.org/question/325245/minimal-ros2-installation/?answer=325249#post-id-325249
 RUN mkdir -p ${ROS_ROOT}/src && \
     cd ${ROS_ROOT} && \
     rosinstall_generator --deps --rosdistro ${ROS_DISTRO} ${ROS_PKG} launch_xml launch_yaml example_interfaces > ros2.${ROS_DISTRO}.${ROS_PKG}.rosinstall && \
     cat ros2.${ROS_DISTRO}.${ROS_PKG}.rosinstall && \
     vcs import src < ros2.${ROS_DISTRO}.${ROS_PKG}.rosinstall
-
-# https://github.com/dusty-nv/jetson-containers/issues/41#issuecomment-774767272
-RUN rm ${ROS_ROOT}/src/libyaml_vendor/CMakeLists.txt && \
-    wget --no-check-certificate https://raw.githubusercontent.com/ros2/libyaml_vendor/master/CMakeLists.txt -P ${ROS_ROOT}/src/libyaml_vendor/
     
 # download unreleased packages
-RUN git clone --branch ros2 https://github.com/Kukanani/vision_msgs ${ROS_ROOT}/src/vision_msgs && \
+RUN git clone --branch ros2 https://github.com/dusty-nv/vision_msgs ${ROS_ROOT}/src/vision_msgs && \
     git clone --branch ${ROS_DISTRO} https://github.com/ros2/demos demos && \
     cp -r demos/demo_nodes_cpp ${ROS_ROOT}/src && \
     cp -r demos/demo_nodes_py ${ROS_ROOT}/src && \
