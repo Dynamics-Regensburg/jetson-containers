@@ -77,6 +77,8 @@ RUN wget https://raw.githubusercontent.com/Dynamics-Regensburg/jetson-containers
 # Dynamics LCD specific dependencies
 #RUN apt-get install libpcl-dev
 
+RUN gcc --version
+
 # Dynamics GPS specific dependencies
 RUN pip install vnpy && \
     wget https://github.com/Dynamics-Regensburg/jetson-containers/raw/main/libs/vnproglib.tar.gz && \
