@@ -77,13 +77,21 @@ RUN wget https://raw.githubusercontent.com/Dynamics-Regensburg/jetson-containers
 # Dynamics LCD specific dependencies
 #RUN apt-get install libpcl-dev
 
-RUN gcc --version
+# Install dependencies for VNPROGLIB
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    unixodbc-dev \
+    unixodbc \
+    libpq-dev
 
+RUN pip3 install --upgrade pip setuptools wheel
+
+ 
 # Dynamics GPS specific dependencies
-RUN pip install vnpy && \
-    wget https://github.com/Dynamics-Regensburg/jetson-containers/raw/main/libs/vnproglib.tar.gz && \
+RUN wget https://github.com/Dynamics-Regensburg/jetson-containers/raw/main/libs/vnproglib.tar.gz && \
     tar -xzvf vnproglib.tar.gz && \
     cd vnproglib-1.1.5.0/python && \
+    echo 'graft libvncxx/include/' >> ./MANIFEST && \
+    ls && \
     python3 setup.py install
 
 
