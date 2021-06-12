@@ -87,11 +87,9 @@ RUN pip3 install --upgrade pip setuptools wheel
 
  
 # Dynamics GPS specific dependencies
-RUN wget https://github.com/Dynamics-Regensburg/jetson-containers/raw/main/libs/vnproglib.tar.gz && \
-    tar -xzvf vnproglib.tar.gz && \
-    cd vnproglib-1.1.5.0/python && \
-    echo 'graft libvncxx/include/' >> ./MANIFEST && \
-    ls && \
+RUN wget https://github.com/Dynamics-Regensburg/jetson-containers/raw/main/libs/vnpy.tar.gz && \
+    tar -xzvf vnpy.tar.gz && \
+    cd python && \
     python3 setup.py install
 
 
@@ -102,4 +100,4 @@ RUN echo '#!/bin/bash \n echo "ROS Workspace not mounted correctly"' >> /workspa
 RUN echo 'source ${ROS_ROOT}/setup.bash' >> /root/.bashrc
 #ENTRYPOINT ["/workspace/entrypoint.sh"]
 CMD ["bash"]
-WORKDIR /
+WORKDIR /workspace
