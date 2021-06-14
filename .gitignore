@@ -1,7 +1,6 @@
 __pycache__
 *.pyc
 *.so
-*.deb
 packages/usr
 test/data
 build_log.txt
