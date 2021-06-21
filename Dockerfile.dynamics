@@ -59,10 +59,28 @@ RUN apt-get update && \
     rosdep update && \
     rm -rf /var/lib/apt/lists/*
 
+#Fix up a bug with boost libs
+RUN cd /usr/lib/aarch64-linux-gnu && \
+    ln -s libboost_python-py36.so libboost_python37.so && \
+    ln -s libboost_python-py36.a libboost_python37.a
+
+
 # download/build the ROS source
 RUN mkdir ros_catkin_ws && \
     cd ros_catkin_ws && \
-    rosinstall_generator ${ROS_PKG} vision_msgs tf tf2 diagnostic_updater camera_info_manager --rosdistro ${ROS_DISTRO} --deps --tar > ${ROS_DISTRO}-${ROS_PKG}.rosinstall && \
+    rosinstall_generator ${ROS_PKG} \
+	vision_msgs \
+	tf tf2 \
+	diagnostic_updater \
+	camera_info_manager \
+	cv_bridge \
+	image_geometry \
+	image_transport \
+	sensor_msgs \
+	roslint \
+	pcl_conversions \
+	pcl_ros \
+	std_srvs --rosdistro ${ROS_DISTRO} --deps --tar > ${ROS_DISTRO}-${ROS_PKG}.rosinstall && \
     mkdir src && \
     vcs import --input ${ROS_DISTRO}-${ROS_PKG}.rosinstall ./src && \
     apt-get update && \
@@ -78,13 +96,14 @@ RUN wget https://raw.githubusercontent.com/Dynamics-Regensburg/jetson-containers
 RUN pip3 install --upgrade pip setuptools wheel
 RUN pip3 install pypylon
 COPY libs/pylon_6.2.0.21487-deb0_arm64.deb /workspace/pylon_installer.deb
+RUN apt-get install /workspace/pylon_installer.deb
 
 # Dynamics LCD specific dependencies
-COPY sick_scan_install.sh /workspace/sick_scan_install_full.sh 
+#COPY sick_scan_install.sh /workspace/sick_scan_install_full.sh 
 RUN apt-get update && apt-get install -y libpcl-dev
-RUN chmod +x /workspace/sick_scan_install_full.sh && \
-    ls && \
-    /workspace/sick_scan_install_full.sh
+#RUN chmod +x /workspace/sick_scan_install_full.sh && \
+#    ls && \
+#    /workspace/sick_scan_install_full.sh
 
 # Install dependencies for VNPY
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -98,22 +117,6 @@ RUN wget https://github.com/Dynamics-Regensburg/jetson-containers/raw/main/libs/
     cd python && \
     python3 setup.py install
 
-#Fix up a bug with boost libs
-RUN cd /usr/lib/aarch64-linux-gnu && \
-    ln -s libboost_python-py36.so libboost_python37.so && \
-    ln -s libboost_python-py36.a libboost_python37.a 
-
-RUN cd /workspace/ros_catkin_ws && \
-    rosinstall_generator cv_bridge image_geometry image_transport sensor_msgs roslint pylon std_srvs --rosdistro ${ROS_DISTRO} --deps --tar > ${ROS_DISTRO}-${ROS_PKG}.rosinstall && \
-    rm -rf src && \
-    mkdir src && \
-    vcs import --input ${ROS_DISTRO}-${ROS_PKG}.rosinstall ./src && \
-    apt-get update && \
-    rosdep install --from-paths ./src --ignore-packages-from-source --rosdistro ${ROS_DISTRO} -y && \
-    python3 ./src/catkin/bin/catkin_make_isolated --install --install-space ${ROS_ROOT} -DCMAKE_BUILD_TYPE=Release && \
-    rm -rf /var/lib/apt/lists/*
-
-RUN apt-get install /workspace/pylon_installer.deb
 
 # setup entrypoint
 RUN echo '#!/bin/bash \n echo "ROS Workspace not mounted correctly"' >> /workspace/entrypoint.sh && \
