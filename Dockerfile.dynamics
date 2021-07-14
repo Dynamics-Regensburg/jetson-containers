@@ -33,6 +33,7 @@ WORKDIR /workspace
 
 # add the ROS deb repo to the apt sources list
 RUN apt-get update && \
+    apt-get upgrade -y && \
     apt-get install -y --no-install-recommends \
           git \
 		cmake \
@@ -90,10 +91,11 @@ RUN mkdir ros_catkin_ws && \
 
 
 # Dynamics VCD specific dependencies
+RUN pip3 install --upgrade pip setuptools wheel
+RUN pip3 install --ignore-installed PyYAML
 RUN wget https://raw.githubusercontent.com/Dynamics-Regensburg/jetson-containers/main/requirements.txt \
     -O /workspace/requirements_new.txt && \
-    pip3 install -qr /workspace/requirements_new.txt
-RUN pip3 install --upgrade pip setuptools wheel
+    pip3 install -r /workspace/requirements_new.txt
 RUN pip3 install pypylon
 COPY libs/pylon_6.2.0.21487-deb0_arm64.deb /workspace/pylon_installer.deb
 RUN apt-get install /workspace/pylon_installer.deb
