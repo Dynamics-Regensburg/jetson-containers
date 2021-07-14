@@ -91,8 +91,8 @@ RUN mkdir ros_catkin_ws && \
 
 # Dynamics VCD specific dependencies
 RUN wget https://raw.githubusercontent.com/Dynamics-Regensburg/jetson-containers/main/requirements.txt \
-    -O /workspace/requirements.txt && \
-    pip3 install -qr /workspace/requirements.txt
+    -O /workspace/requirements_new.txt && \
+    pip3 install -qr /workspace/requirements_new.txt
 RUN pip3 install --upgrade pip setuptools wheel
 RUN pip3 install pypylon
 COPY libs/pylon_6.2.0.21487-deb0_arm64.deb /workspace/pylon_installer.deb
