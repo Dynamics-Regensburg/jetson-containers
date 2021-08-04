@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd /usr/src/app/data/iamges 
+cd /usr/src/app/data/images 
 wget $zipfile -O data.zip
 unzip data.zip
 
